@@ -16,8 +16,8 @@ class UploadWorker
             print "visiting wigle..."
             visit '/uploads'
             click_on 'topBarLogin'
-            fill_in('cred0', :with => 'blrichards')
-            fill_in('cred1', :with => 'Benton97')
+            fill_in('cred0', :with => 'bastille')
+            fill_in('cred1', :with => 'SDRsrock')
             find('.regbutton').click
             while not page.has_css?('#topBarLogout') do
         	print "."
