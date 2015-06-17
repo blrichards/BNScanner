@@ -120,8 +120,8 @@ def upload
     system('rm to_upload/*')
 end
 
-# networkIsAvailable()
-# configInterfaces()
+networkIsAvailable()
+configInterfaces()
 upload()
-# monitor()
-# startCollecting()
+monitor()
+startCollecting()
