@@ -14,7 +14,7 @@ class Sniffer
     def configInterfaces
         if not `iwconfig`.include? "wlan0mon"
             system("sudo iw dev wlan0 interface add wlan0mon type monitor")
-            system("echo 'wlan0mon was added to interfaces'")
+            puts "wlan0mon was added to interfaces"
         end
         puts "wireless interfaces have been configured"
     end
@@ -124,7 +124,6 @@ end
 
 BNSniffer = Sniffer. new
 
-sleep(10)
 if BNSniffer.networkIsAvailable()
     BNSniffer.upload()
 end
