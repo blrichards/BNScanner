@@ -1,1 +1,1 @@
-gem 'capybara'
+gem 'capybara', :require => true

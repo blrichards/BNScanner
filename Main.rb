@@ -1,4 +1,5 @@
 require './Sniffer'
+Bundler.require
 
 networkIsAvailable()
 configInterfaces()
