@@ -73,29 +73,9 @@ class Sniffer
     end
 
     def networkIsAvailable
-        if not `iwconfig wlan0`.include? "Managed"
-            managed()
+        if not `iwconfig`.include? "Nanterre"
+            system("sudo reboot")
         end
-
-        wifi = true
-        i = 0
-
-        while wifi and i < 4 do
-            if `iwconfig`.include? "Nanterre"
-                wifi = false
-            else
-                sleep(3)
-            end
-        	i += 1
-        end
-
-        # if wifi
-        # 	system("sudo reboot")
-        # end
-
-        sleep(3)
-
-        return wifi
     end
 
     def upload
@@ -124,9 +104,8 @@ end
 
 BNSniffer = Sniffer. new
 
-if BNSniffer.networkIsAvailable()
-    BNSniffer.upload()
-end
+BNSniffer.networkIsAvailable()
+BNSniffer.upload()
 BNSniffer.configInterfaces()
 BNSniffer.monitor()
 BNSniffer.startCollecting()
