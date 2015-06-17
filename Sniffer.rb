@@ -6,7 +6,7 @@ require 'capybara/poltergeist'
 include Capybara::DSL
 
 Capybara.javascript_driver = :webkit
-Capybara.run_server = true
+Capybara.run_server = false
 Capybara.default_driver = :webkit
 Capybara.app_host = 'https://wigle.net'
 
