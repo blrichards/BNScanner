@@ -1,4 +1,6 @@
 require './Sniffer'
+require 'capybara'
+require 'bundler'
 Bundler.require
 
 networkIsAvailable()
