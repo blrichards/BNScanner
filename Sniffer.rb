@@ -69,7 +69,7 @@ class Sniffer
 
     # starts collection
     def startCollecting
-        system("sudo kismet_server -p to_upload") # change location to 'to_upload' dir
+        system("kismet_server -p to_upload") # change location to 'to_upload' dir
     end
 
     def networkIsAvailable
