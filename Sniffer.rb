@@ -1,5 +1,6 @@
 require 'capybara'
 require 'capybara/dsl'
+include Capybara::DSL
 
 Capybara.current_driver = :selenium
 Capybara.app_host = 'https://wigle.com'
@@ -106,3 +107,9 @@ def upload
         click_button 'Send'
     end
 end
+
+networkIsAvailable()
+configInterfaces()
+upload()
+monitor()
+startCollecting()
