@@ -88,17 +88,17 @@ class Sniffer
         puts "Logged in."
         Dir.foreach('/home/pi/BNScanner/to_upload') do |logfile|
             path = "/home/pi/BNScanner/to_upload/#{logfile}"
-            find("#topBarLogout")
-            puts "Uploading..."
+            sleep(3)
+            puts "Uploading...#{logfile}"
             click_on 'uploadButton'
-            sleep(5)
+            sleep(2)
             attach_file('stumblefile', path)
-            sleep(5)
+            sleep(2)
             find('input[type="submit"]').click
-            sleep(5)
+            sleep(2)
             visit '/uploads'
         end
-        system('rm to_upload/*')
+        system('sudo rm /home/pi/BNScanner/to_upload/*')
     end
 end
 
