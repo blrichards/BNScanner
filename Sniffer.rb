@@ -1,9 +1,13 @@
 require 'capybara'
 require 'capybara/dsl'
+require 'capybara/poltergeist'
+
 include Capybara::DSL
 
-Capybara.current_driver = :selenium
-Capybara.app_host = 'https://wigle.com'
+Capybara.javascript_driver = :poltergeist
+Capybara.run_server = true
+Capybara.default_driver = :poltergeist
+Capybara.app_host = 'https://wigle.net'
 
 # makes sure all the proper interfaces are present
 def configInterfaces
@@ -95,21 +99,29 @@ end
 
 def upload
     puts "visiting wigle..."
-    click_button 'topBarLogin'
-    fill_in('cred0', :with => ENV['blrichards'])
-    fill_in('cred1', :with => ENV['Benton97'])
+    visit '/uploads'
+    click_link 'topBarLogin'
+    fill_in('cred0', :with => 'blrichards')
+    fill_in('cred1', :with => 'Benton97')
     click_button 'Login'
     puts "Logged in."
-    puts "Uploading..."
-    Dir.foreach('/home/pi/ruby_sniffer/to_upload') do |logfile|
-        click_link 'uploadButton'
-        attach_file('stumblefile', logfile)
-        click_button 'Send'
+    Dir.foreach('/ruby-sniffer/to_upload') do |logfile|
+        path = "/ruby-sniffer/to_upload/#{logfile}"
+        find("#topBarLogout")
+        puts "Uploading..."
+        click_on 'uploadButton'
+        sleep(2)
+        attach_file('stumblefile', path)
+        sleep(2)
+        find('input[type="submit"]').click
+        sleep(2)
+        visit '/uploads'
     end
+    system('rm to_upload/*')
 end
 
-networkIsAvailable()
-configInterfaces()
+# networkIsAvailable()
+# configInterfaces()
 upload()
-monitor()
-startCollecting()
+# monitor()
+# startCollecting()
