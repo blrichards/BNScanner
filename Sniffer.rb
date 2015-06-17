@@ -124,12 +124,10 @@ end
 
 BNSniffer = Sniffer. new
 
-# sleep(10)
-# # if BNSniffer.networkIsAvailable()
-#     BNSniffer.upload()
-# end
-# BNSniffer.configInterfaces()
-# BNSniffer.monitor()
-# BNSniffer.startCollecting()
-
-BNSniffer.upload()
+sleep(10)
+if BNSniffer.networkIsAvailable()
+    BNSniffer.upload()
+end
+BNSniffer.configInterfaces()
+BNSniffer.monitor()
+BNSniffer.startCollecting()
