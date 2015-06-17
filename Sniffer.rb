@@ -86,8 +86,8 @@ class Sniffer
         fill_in('cred1', :with => 'Benton97')
         click_button 'Login'
         puts "Logged in."
-        Dir.foreach('/BNSniffer/to_upload') do |logfile|
-            path = "/BNSniffer/to_upload/#{logfile}"
+        Dir.foreach('/BNScanner/to_upload') do |logfile|
+            path = "/BNScanner/to_upload/#{logfile}"
             find("#topBarLogout")
             puts "Uploading..."
             click_on 'uploadButton'
