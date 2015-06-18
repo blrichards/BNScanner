@@ -18,10 +18,10 @@ class UploadWorker
         fill_in('cred1', :with => 'Benton97')
         click_button 'Login'
         puts "Logged in."
-        unless Dir["/foo/bar/*"].empty?
-            Dir.foreach('BNScanner/to_upload') do |logfile|
+        unless (Dir.entries('/root/BNScanner/to_upload') - %w{. ..}).empty?
+            Dir.foreach('/root/BNScanner/to_upload') do |logfile|
                 next if logfile == '.' or logfile == '..'
-                path = "BNScanner/to_upload/#{logfile}"
+                path = "/root/BNScanner/to_upload/#{logfile}"
                 sleep(3)
                 puts "Uploading...#{logfile}"
                 click_on 'uploadButton'
