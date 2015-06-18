@@ -4,7 +4,7 @@ wigle = UploadWorker.new
 
 # try to upload if connected to the network
 puts "Checking for networks..."
-`iwconfig`.include? "Nanterre" ? wigle.upload : puts "No network available. Configuring dongle for sniffing..."
+`iwconfig`.include? "Nanterre" ? wigle.upload : puts("No network available. Configuring dongle for sniffing...")
 
 # add a wlan0 subinterface to allow channel hopping
 unless `iwconfig`.include? "wlan0mon"
