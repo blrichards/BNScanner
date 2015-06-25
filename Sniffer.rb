@@ -1,9 +1,17 @@
+#!/usr/bin/env ruby
+
 require_relative 'Uploader'
 
 wigle = UploadWorker.new
 
 # try to upload if connected to the network
 puts "Checking for networks..."
+system "iwconfig wlan0 txpower off"
+sleep 3
+system "iwconfig wlan0 txpower on"
+sleep 3
+system "iwconfig wlan0"
+sleep 5
 wigle.upload if `iwconfig`.include? "Nanterre"
 
 # add a wlan0 subinterface to allow channel hopping
@@ -24,7 +32,7 @@ system "sudo iwconfig wlan0 txpower on"
 
 # trigger kismet_server and place logfiles in to_upload directory
 puts "Sniffing..."
-system "kismet_server -p to_upload"
+system "kismet_server -p /home/pi/BNScanner/to_upload"
 
 # cut power to wlan0 (aka the wifi module)
 system "sudo iwconfig wlan0 txpower off"
