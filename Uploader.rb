@@ -18,8 +18,10 @@ class UploadWorker
         fill_in('cred0', :with => 'blrichards')
         fill_in('cred1', :with => 'Benton97')
         find('.regbutton').click
-        sleep 3 # may need to be increased on pi
-        find('.userText')
+	while not page.has_css?('#topBarLogout') do
+	    print "."
+	end
+	# find('.userText')
         puts "Logged in."
         unless (Dir.entries('/home/pi/BNScanner/to_upload') - %w{. ..}).empty?
         # unless (Dir.entries('/Users/benrichards/Projects/BNScanner/to_upload') - %w{. ..}).empty?
