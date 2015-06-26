@@ -19,34 +19,30 @@ class UploadWorker
             fill_in('cred0', :with => 'blrichards')
             fill_in('cred1', :with => 'Benton97')
             find('.regbutton').click
-        	while not page.has_css?('#topBarLogout') do
-        	    print "."
-        	end
+            while not page.has_css?('#topBarLogout') do
+        	print "."
+            end
             puts "Logged in."
             unless (Dir.entries('/home/pi/BNScanner/to_upload') - %w{. ..}).empty?
                 Dir.foreach('/home/pi/BNScanner/to_upload') do |logfile|
-                    next if logfile == '.' or logfile == '..'
                     path = "/home/pi/BNScanner/to_upload/#{logfile}"
-                    puts "Uploading #{logfile}..."
+                    next if logfile == '.' or logfile == '..' or File.zero?(path) 
+                    print "Uploading #{logfile}..."	
                     find('#uploadButton').click
-                    find('input[name="stumblefile"]')
-                    attach_file('stumblefile', path)
-                    find('input[name="Send"]').click
-                    while not page.has_css?('#topBarLogout') do
-                	    print "."
-                	end
+		    find('input[name="stumblefile"]')
+		    attach_file("stumblefile", path)
+		    find('input[name="Send"]').click
+                    while not page.has_css?('.statsSection') do
+                        print "."
+                    end
+		    puts "done"
                     click_on "Return to your uploads page"
-                    save_and_open_screenshot
                 end
             end
-            system('sudo rm /home/pi/BNScanner/to_upload/Kismet*')
-        # rescue
-            # system('Error occured. Rebooting...')
-            # puts "system will reboot"
+            system('sudo rm /home/pi/BNScanner/to_upload/*')
+        rescue
+            puts "Error occured. Rebooting..."
+            system("sudo reboot")
         end
     end
 end
-
-wigle = UploadWorker.new
-
-wigle.upload

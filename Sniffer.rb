@@ -2,16 +2,9 @@
 
 require_relative 'Uploader'
 
-wigle = UploadWorker.new
+puts "Checking for networks"
 
-# try to upload if connected to the network
-puts "Checking for networks..."
-system "iwconfig wlan0 txpower off"
-sleep 3
-system "iwconfig wlan0 txpower on"
-sleep 3
-system "iwconfig wlan0"
-sleep 5
+wigle = UploadWorker.new
 wigle.upload if `iwconfig`.include? "Nanterre"
 
 # add a wlan0 subinterface to allow channel hopping
@@ -33,6 +26,5 @@ system "sudo iwconfig wlan0 txpower on"
 # trigger kismet_server and place logfiles in to_upload directory
 while true
     puts "Sniffing..."
-    system "timeout 2m kismet_server -p /home/pi/BNScanner/to_upload"
-    sleep 2.minutes
+    system "timeout 120 kismet_server -p /home/pi/BNScanner/to_upload"
 end
