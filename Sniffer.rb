@@ -31,16 +31,8 @@ sleep 5
 system "sudo iwconfig wlan0 txpower on"
 
 # trigger kismet_server and place logfiles in to_upload directory
-puts "Sniffing..."
-system "kismet_server -p /home/pi/BNScanner/to_upload"
-
-# cut power to wlan0 (aka the wifi module)
-system "sudo iwconfig wlan0 txpower off"
-sleep 1
-
-# switch wlan0 to managed mode
-system "sudo iwconfig wlan0 mode managed"
-sleep 5
-
-# reinitiate power to wlan0
-system "sudo iwconfig wlan0 txpower on"
+while true
+    puts "Sniffing..."
+    system "timeout 2m kismet_server -p /home/pi/BNScanner/to_upload"
+    sleep 2.minutes
+end

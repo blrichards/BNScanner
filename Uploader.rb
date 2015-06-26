@@ -24,15 +24,11 @@ class UploadWorker
             Dir.foreach('/home/pi/BNScanner/to_upload') do |logfile|
                 next if logfile == '.' or logfile == '..'
                 path = "/home/pi/BNScanner/to_upload/#{logfile}"
-                # find '#topBarLogout'
-                sleep(8)
                 puts "Uploading...#{logfile}"
-                click_on 'uploadButton'
-                sleep(8)
+                find('#uploadButton').trigger('click')
                 attach_file('stumblefile', path)
-                sleep(8)
-                find('input[type="submit"]').click
-                sleep(8)
+                find("Send").click
+		sleep 3
                 visit '/uploads'
             end
         end
