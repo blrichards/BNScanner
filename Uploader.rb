@@ -25,18 +25,22 @@ class UploadWorker
             puts "Logged in."
             unless (Dir.entries('/home/pi/BNScanner/to_upload') - %w{. ..}).empty?
                 Dir.foreach('/home/pi/BNScanner/to_upload') do |logfile|
-                    path = "/home/pi/BNScanner/to_upload/#{logfile}"
-                    next if logfile == '.' or logfile == '..' or File.zero?(path) 
-                    print "Uploading #{logfile}..."	
-                    find('#uploadButton').click
-		    find('input[name="stumblefile"]')
-		    attach_file("stumblefile", path)
-		    find('input[name="Send"]').click
-                    while not page.has_css?('.statsSection') do
-                        print "."
+                    begin
+                        path = "/home/pi/BNScanner/to_upload/#{logfile}"
+                        next if logfile == '.' or logfile == '..' or File.zero?(path)
+                        print "Uploading #{logfile}..."
+                        find('#uploadButton').click
+            		    find('input[name="stumblefile"]')
+            		    attach_file("stumblefile", path)
+            		    find('input[name="Send"]').click
+                        while not page.has_css?('.statsSection') do
+                            print "."
+                        end
+    		            puts "done"
+                        click_on "Return to your uploads page"
+                    rescue
+                        next
                     end
-		    puts "done"
-                    click_on "Return to your uploads page"
                 end
             end
             system('sudo rm /home/pi/BNScanner/to_upload/*')
