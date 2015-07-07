@@ -36,11 +36,12 @@ class UploadWorker
                         while not page.has_css?('.statsSection') do
                             print "."
                         end
-    		            puts "done"
-                        click_on "Return to your uploads page"
                     rescue
+                        puts "problem occured uploading file"
                         next
                     end
+		            puts "done"
+                    click_on "Return to your uploads page"
                 end
             end
             system('sudo rm /home/pi/BNScanner/to_upload/*')
