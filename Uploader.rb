@@ -40,7 +40,6 @@ class UploadWorker
 
             # starts uploading files one by one
             Dir.foreach(path) do |captureFile|
-                tries = 0
                 begin
                     uploadFile = "#{path}/#{captureFile}"
                     next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
@@ -51,15 +50,9 @@ class UploadWorker
         		    find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
                 rescue Exception => e
-                    tries += 1
-                    puts tries
                     upLogger.error e.message
-                    if tries == 3
-                        print "\nfailed"
-                        next
-                    end
-                    puts "\nProblem occured uploading file."
-                    retry
+                    puts "failed"
+                    next
                 end
                 puts "success"
             end
