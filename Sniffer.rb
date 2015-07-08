@@ -5,7 +5,7 @@ require_relative 'Uploader'
 puts "Checking for networks"
 
 wigle = UploadWorker.new
-wigle.upload if `iwconfig`.include? "Nanterre"
+wigle.upload("/home/pi/BNScanner/to_upload") if `iwconfig`.include? "Nanterre"
 
 # add a wlan0 subinterface to allow channel hopping
 unless `iwconfig`.include? "wlan0mon"

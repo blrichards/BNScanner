@@ -1,6 +1,7 @@
 require 'capybara'
 require 'capybara/dsl'
 require 'capybara/poltergeist'
+require 'logger'
 
 Capybara.javascript_driver = :poltergeist
 Capybara.run_server = true
@@ -11,47 +12,59 @@ Capybara.app_host = 'https://wigle.net'
 class UploadWorker
     include Capybara::DSL
 
-    def upload
+    def upload(path)
+        conLogger = Logger.new('log_files/connection_error.log')
+        upLogger = Logger.new('log_files/upload_error.log')
+
+        #connects to wigle
         begin
-            print "visiting wigle..."
+            print "\nvisiting wigle..."
             visit '/uploads'
             click_on 'topBarLogin'
             fill_in('cred0', :with => 'bastille')
             fill_in('cred1', :with => 'SDRsrock')
             find('.regbutton').click
-            while not page.has_css?('#topBarLogout') do
-        	print "."
-            end
+            print "." until page.has_css?('#topBarLogout')
             puts "Logged in."
-            unless (Dir.entries('/home/pi/BNScanner/to_upload') - %w{. ..}).empty?
-                Dir.foreach('/home/pi/BNScanner/to_upload') do |logfile|
-                    begin
-                        path = "/home/pi/BNScanner/to_upload/#{logfile}"
-                        next if logfile == '.' or logfile == '..' or File.zero?(path)
-                        print "Uploading #{logfile}..."
-                        find('#uploadButton').click
-            		    find('input[name="stumblefile"]')
-            		    attach_file("stumblefile", path)
-            		    find('input[name="Send"]').click
-                        while not page.has_css?('.statsSection') do
-                            print "."
-                        end
-                    rescue
-                        #puts "problem occured uploading file"
-                        #next
+        rescue Exception => e
+            conLogger.error e.message
+            puts "\nConnection error occured. \nRebooting network"
+            system("sudo /etc/init.d/networking restart")
+            print "." until `iwconfig`.include? "Nanterre"
+            retry
+        end
+
+        # starts uploading files one by one
+        unless (Dir.entries(path) - %w{. ..}).empty?
+            Dir.foreach(path) do |captureFile|
+                begin
+                    uploadFile = "#{path}/#{captureFile}"
+                    next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
+                    print "Uploading #{captureFile}..."
+                    find('#uploadButton').click
+        		    find('input[name="stumblefile"]')
+        		    attach_file("stumblefile", uploadFile)
+        		    find('input[name="Send"]').click
+                    while not page.has_css?('.statsSection') do
+                        print "."
                     end
-		    puts "done"
-                    click_on "Return to your uploads page"
+                rescue Exception => e
+                    upLogger.error e.message
+                    puts "\nProblem occured uploading file. Re-attempting..."
+                    retry
+                rescue Exception => e
+                    upLogger.error e.message
+                    puts "\nFile could not be uploaded. Moving on..."
+                    next
                 end
             end
-            system('sudo rm /home/pi/BNScanner/to_upload/*')
-        rescue
-            puts "Error occured. Rebooting network."
-            system("sudo /etc/init.d/networking restart")
         end
+        upLogger.close
+        conLogger.close
+        system('sudo rm #{path}/*')
     end
 end
 
-wigle = UploadWorker.new
+# wigle = UploadWorker.new
 
-wigle.upload
+# wigle.upload("/Users/benrichards/Projects/BNScanner/to_upload")
