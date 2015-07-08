@@ -12,6 +12,7 @@ class UploadWorker
     include Capybara::DSL
 
     def upload(path)
+        puts "Commencing upload..."
         # check if upload folder is empty
         puts "No files to upload " if (Dir.entries(path) - %w{. ..}).empty?
         unless (Dir.entries(path) - %w{. ..}).empty?
