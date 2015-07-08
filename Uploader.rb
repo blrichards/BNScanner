@@ -58,9 +58,8 @@ class UploadWorker
                     retry
                 end
                 puts "success"
-                
+
                 catch :moveOn do
-                    upLogger.error e.message
                     puts "\nFile could not be uploaded. Moving on..."
                     next
                 end
