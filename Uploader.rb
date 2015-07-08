@@ -67,6 +67,3 @@ class UploadWorker
     end
 end
 
-wigle = UploadWorker.new
-
-wigle.upload("/home/pi/BNScanner/to_upload")
