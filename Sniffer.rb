@@ -1,30 +1,17 @@
 #!/usr/bin/env ruby
-
 require_relative 'Uploader'
 
-puts "Checking for network connection..."
-
-wigle = UploadWorker.new
-wigle.upload("/home/pi/BNScanner/to_upload") if `iwconfig`.include? "Nanterre"
-
-# add a wlan0 subinterface to allow channel hopping
-#unless `iwconfig`.include? "wlan0mon"
-#    system("sudo iw dev wlan0 interface add wlan0mon type monitor")
-#end
-
-# cut power to wlan0 (aka the wifi module)
-# system "sudo iwconfig wlan0 txpower off"
-# sleep 1
-
-# switch wlan0 to monitor mode
-# system "sudo iwconfig wlan0 mode monitor"
-# sleep 5
-
-# reinitiate power to wlan0
-# system "sudo iwconfig wlan0 txpower on"
-
-# trigger kismet_server and place logfiles in to_upload directory
-while true
-    puts "Sniffing..."
-    system "timeout 120 kismet_server -p /home/pi/BNScanner/to_upload"
+if `iwconfig`.include? "Nanterre"
+    puts "Conventional WiFi dongle detected.\n\nCommencing upload..."
+    wigle = UploadWorker.new
+    wigle.upload("/home/pi/BNScanner/to_upload")
+elsif `ifconfig`.include? "inet addr:192.168.1"
+    puts "Ethernet connection detected. \n\nCommencing upload..."
+    wigle = UploadWorker.new
+    wigle.upload("/home/pi/BNScanner/to_upload")
+elsif `iwconfig`.include? "wlan8"
+    puts "Wardriving dongle detected.\n\nCommencing data collection..."
+    system "timeout 120 kismet_server -p /home/pi/BNScanner/to_upload" until false
+else
+    puts "No data collection tools detected. Please connect to internet or insert wardriving dongle, then reboot."
 end
