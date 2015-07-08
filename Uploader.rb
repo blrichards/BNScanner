@@ -40,8 +40,9 @@ class UploadWorker
 
             # starts uploading files one by one
             Dir.foreach(path) do |captureFile|
-                x ||= 3
+                tries = 0
                 begin
+                    throw :moveOn if tries == 3
                     uploadFile = "#{path}/#{captureFile}"
                     next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
                     print "Uploading #{captureFile}..."
@@ -51,15 +52,18 @@ class UploadWorker
         		    find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
                 rescue Exception => e
+                    tries += 1
                     upLogger.error e.message
                     puts "\nProblem occured uploading file. #{x} more tries"
-                    retry unless (tries -= 1).zero?
-                rescue Exception => e
+                    retry
+                end
+                puts "success"
+                
+                catch :moveOn do
                     upLogger.error e.message
                     puts "\nFile could not be uploaded. Moving on..."
                     next
                 end
-                puts "success"
             end
         end
 
