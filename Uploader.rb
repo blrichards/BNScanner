@@ -56,6 +56,7 @@ class UploadWorker
                     puts "\nFile could not be uploaded. Moving on..."
                     next
                 end
+                puts "success"
             end
         end
 
