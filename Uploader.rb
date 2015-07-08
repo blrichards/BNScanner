@@ -67,6 +67,6 @@ class UploadWorker
     end
 end
 
-# wigle = UploadWorker.new
+wigle = UploadWorker.new
 
-# wigle.upload("/Users/benrichards/Projects/BNScanner/to_upload")
+wigle.upload("/home/pi/BNScanner/to_upload")
