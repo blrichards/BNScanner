@@ -2,11 +2,11 @@
 require_relative 'Uploader'
 
 if `iwconfig wlan0`.include? "Nanterre"
-    puts "Conventional WiFi dongle detected.\nCommencing upload..."
+    puts "Conventional WiFi dongle detected."
     wigle = UploadWorker.new
     wigle.upload("/home/pi/BNScanner/to_upload")
 elsif `ifconfig eth0`.include? "inet addr:192.168.1"
-    puts "Ethernet connection detected. \nCommencing upload..."
+    puts "Ethernet connection detected."
     wigle = UploadWorker.new
     wigle.upload("/home/pi/BNScanner/to_upload")
 elsif `iwconfig`.include? "wlan8"
