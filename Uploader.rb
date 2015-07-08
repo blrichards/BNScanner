@@ -13,8 +13,9 @@ class UploadWorker
 
     def upload(path)
         # check if upload folder is empty
-        unless (Dir.entries(path) - %w{. ..}).empty?
+	puts "No files to upload " if (Dir.entries(path) - %w{. ..}).empty?
 
+        unless (Dir.entries(path) - %w{. ..}).empty?
             #connects to wigle
             begin
                 print "\nvisiting wigle..."
@@ -50,9 +51,8 @@ class UploadWorker
                 end
                 puts "success"
             end
+	    # deletes uploaded files
+            system 'sudo rm /home/pi/BNScanner/to_upload/*'
         end
-
-        # deletes uploaded files
-        system 'sudo rm /home/pi/BNScanner/to_upload/*'
     end
 end
