@@ -59,11 +59,11 @@ class UploadWorker
                 end
             end
         end
-        
+
         upLogger.close
         conLogger.close
 
-        system 'sudo rm /home/pi/BNScanner/to_upload/*''
+        system 'sudo rm /home/pi/BNScanner/to_upload/*'
     end
 end
 
