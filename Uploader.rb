@@ -37,6 +37,7 @@ class UploadWorker
         # starts uploading files one by one
         unless (Dir.entries(path) - %w{. ..}).empty?
             Dir.foreach(path) do |captureFile|
+                x ||= 3
                 begin
                     uploadFile = "#{path}/#{captureFile}"
                     next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
@@ -45,13 +46,11 @@ class UploadWorker
         		    find('input[name="stumblefile"]')
         		    attach_file("stumblefile", uploadFile)
         		    find('input[name="Send"]').click
-                    while not page.has_css?('.statsSection') do
-                        print "."
-                    end
+                    print "." until page.has_css?('.statsSection')
                 rescue Exception => e
                     upLogger.error e.message
-                    puts "\nProblem occured uploading file. Re-attempting..."
-                    retry
+                    puts "\nProblem occured uploading file. #{x} more tries"
+                    retry unless (tries -= 1).zero?
                 rescue Exception => e
                     upLogger.error e.message
                     puts "\nFile could not be uploaded. Moving on..."
