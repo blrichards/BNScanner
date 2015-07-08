@@ -13,29 +13,32 @@ class UploadWorker
     include Capybara::DSL
 
     def upload(path)
+        # start error logs
         conLogger = Logger.new('log_files/connection_error.log')
         upLogger = Logger.new('log_files/upload_error.log')
 
-        #connects to wigle
-        begin
-            print "\nvisiting wigle..."
-            visit '/uploads'
-            click_on 'topBarLogin'
-            fill_in('cred0', :with => 'bastille')
-            fill_in('cred1', :with => 'SDRsrock')
-            find('.regbutton').click
-            print "." until page.has_css?('#topBarLogout')
-            puts "Logged in."
-        rescue Exception => e
-            conLogger.error e.message
-            puts "\nConnection error occured. \nRebooting network"
-            system("sudo /etc/init.d/networking restart")
-            print "." until `iwconfig`.include? "Nanterre"
-            retry
-        end
-
-        # starts uploading files one by one
+        # check if upload folder is empty
         unless (Dir.entries(path) - %w{. ..}).empty?
+
+            #connects to wigle
+            begin
+                print "\nvisiting wigle..."
+                visit '/uploads'
+                click_on 'topBarLogin'
+                fill_in('cred0', :with => 'bastille')
+                fill_in('cred1', :with => 'SDRsrock')
+                find('.regbutton').click
+                print "." until page.has_css?('#topBarLogout')
+                puts "Logged in."
+            rescue Exception => e
+                conLogger.error e.message
+                puts "\nConnection error occured. \nRebooting network"
+                system("sudo /etc/init.d/networking restart")
+                print "." until `iwconfig`.include? "Nanterre"
+                retry
+            end
+
+            # starts uploading files one by one
             Dir.foreach(path) do |captureFile|
                 x ||= 3
                 begin
@@ -63,7 +66,7 @@ class UploadWorker
         upLogger.close
         conLogger.close
 
+        # deletes uploaded files
         system 'sudo rm /home/pi/BNScanner/to_upload/*'
     end
 end
-
