@@ -13,8 +13,7 @@ class UploadWorker
 
     def upload(path)
         # check if upload folder is empty
-	puts "No files to upload " if (Dir.entries(path) - %w{. ..}).empty?
-
+        puts "No files to upload " if (Dir.entries(path) - %w{. ..}).empty?
         unless (Dir.entries(path) - %w{. ..}).empty?
             #connects to wigle
             begin
@@ -29,7 +28,6 @@ class UploadWorker
             rescue
                 puts "\nConnection error occured. \nRebooting network"
                 system("sudo /etc/init.d/networking restart")
-                print "." until `iwconfig`.include? "Nanterre"
                 retry
             end
 
@@ -40,9 +38,9 @@ class UploadWorker
                     next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
                     print "Uploading #{captureFile}..."
                     find('#uploadButton').click
-        		    find('input[name="stumblefile"]')
-        		    attach_file("stumblefile", uploadFile)
-        		    find('input[name="Send"]').click
+                    find('input[name="stumblefile"]')
+                    attach_file("stumblefile", uploadFile)
+                    find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
                     click_on "Return to your uploads page"
                 rescue
@@ -51,8 +49,9 @@ class UploadWorker
                 end
                 puts "success"
             end
-	    # deletes uploaded files
+            # deletes uploaded files
             system 'sudo rm /home/pi/BNScanner/to_upload/*'
         end
+        puts "Upload complete."
     end
 end
