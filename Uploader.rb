@@ -37,17 +37,21 @@ class UploadWorker
                             print "."
                         end
                     rescue
-                        puts "problem occured uploading file"
-                        next
+                        #puts "problem occured uploading file"
+                        #next
                     end
-		            puts "done"
+		    puts "done"
                     click_on "Return to your uploads page"
                 end
             end
             system('sudo rm /home/pi/BNScanner/to_upload/*')
         rescue
-            puts "Error occured. Rebooting..."
-            system("sudo reboot")
+            puts "Error occured. Rebooting network."
+            system("sudo /etc/init.d/networking restart")
         end
     end
 end
+
+wigle = UploadWorker.new
+
+wigle.upload
