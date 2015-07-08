@@ -1,7 +1,6 @@
 require 'capybara'
 require 'capybara/dsl'
 require 'capybara/poltergeist'
-require 'logger'
 
 Capybara.javascript_driver = :poltergeist
 Capybara.run_server = true
@@ -13,10 +12,6 @@ class UploadWorker
     include Capybara::DSL
 
     def upload(path)
-        # start error logs
-        conLogger = Logger.new('log_files/connection_error.log')
-        upLogger = Logger.new('log_files/upload_error.log')
-
         # check if upload folder is empty
         unless (Dir.entries(path) - %w{. ..}).empty?
 
@@ -30,8 +25,7 @@ class UploadWorker
                 find('.regbutton').click
                 print "." until page.has_css?('#topBarLogout')
                 puts "Logged in."
-            rescue Exception => e
-                conLogger.error e.message
+            rescue
                 puts "\nConnection error occured. \nRebooting network"
                 system("sudo /etc/init.d/networking restart")
                 print "." until `iwconfig`.include? "Nanterre"
@@ -50,17 +44,13 @@ class UploadWorker
         		    find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
                     click_on "Return to your uploads page"
-                rescue Exception => e
-                    upLogger.error e.message
+                rescue
                     puts "failed"
                     next
                 end
                 puts "success"
             end
         end
-
-        upLogger.close
-        conLogger.close
 
         # deletes uploaded files
         system 'sudo rm /home/pi/BNScanner/to_upload/*'
