@@ -49,6 +49,7 @@ class UploadWorker
         		    attach_file("stumblefile", uploadFile)
         		    find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
+                    click_on "Return to your uploads page"
                 rescue Exception => e
                     upLogger.error e.message
                     puts "failed"
