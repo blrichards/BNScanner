@@ -1,4 +1,4 @@
-\require 'capybara'
+require 'capybara'
 require 'capybara/dsl'
 require 'capybara/poltergeist'
 
