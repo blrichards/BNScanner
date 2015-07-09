@@ -1,4 +1,4 @@
-require 'capybara'
+\require 'capybara'
 require 'capybara/dsl'
 require 'capybara/poltergeist'
 
@@ -29,15 +29,29 @@ class UploadWorker
             rescue
                 puts "\nConnection error occured. \nRebooting network"
                 system("sudo /etc/init.d/networking restart")
-                retry
+                sleep 5
+		retry
             end
+
+            x = 0
+            Dir.foreach(path) do |file|
+		if File.zero?(file)
+		    system("sudo rm #{path}/#{file}")
+		    next
+		end
+		x += 1
+	    end
+
+	    puts "#{x} files to upload"		  
 
             # starts uploading files one by one
             Dir.foreach(path) do |captureFile|
+		y ||= 0
+		y += 1
                 begin
                     uploadFile = "#{path}/#{captureFile}"
-                    next if captureFile == '.' or captureFile == '..' or File.zero?(uploadFile)
-                    print "Uploading #{captureFile}..."
+                    next if captureFile == '.' or captureFile == '..'
+                    print "Uploading file #{y} of #{x}..."
                     find('#uploadButton').click
                     find('input[name="stumblefile"]')
                     attach_file("stumblefile", uploadFile)
