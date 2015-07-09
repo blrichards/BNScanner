@@ -44,6 +44,7 @@ class UploadWorker
                     find('input[name="Send"]').click
                     print "." until page.has_css?('.statsSection')
                     click_on "Return to your uploads page"
+                    system "sudo rm #{uploadFile}"
                 rescue
                     puts "failed"
                     next
@@ -51,7 +52,6 @@ class UploadWorker
                 puts "success"
             end
             # deletes uploaded files
-            system 'sudo rm /home/pi/BNScanner/to_upload/*'
         end
         puts "Upload complete."
     end
